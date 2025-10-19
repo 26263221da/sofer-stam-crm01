@@ -2,98 +2,101 @@
 <html lang="he">
 <head>
   <meta charset="UTF-8">
-  <title>מערכת CRM לסופר סת"ם</title>
-  <link rel="stylesheet" href="style.css">
+  <title>התחברות למערכת CRM</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      direction: rtl;
+      background: linear-gradient(to bottom right, #2c3e50, #4ca1af);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      text-align: right;
+    }
+
+    .logo {
+      width: 100px;
+      height: auto;
+      margin: 30px 0 10px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 400px;
+      padding: 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    input, button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+      text-align: right;
+    }
+
+    button {
+      background-color: #ffffff;
+      color: #2c3e50;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #f1f1f1;
+    }
+
+    h1, h2 {
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
+  <!-- לוגו האפליקציה בראש הדף -->
+  <img src="img_4549.png" alt="לוגו CRM" class="logo" />
+
   <div class="container">
-    <!-- מסך פתיחה עם לוגו -->
-    <div id="welcomeScreen">
-      <img src="img_4549.png" alt="לוגו העסק" class="logo" />
-      <h1>ברוך הבא למערכת CRM</h1>
-      <input type="text" id="businessInput" placeholder="הכנס שם העסק שלך" />
-      <button onclick="startApp()">התחל</button>
+    <div id="loginScreen">
+      <h1>התחברות</h1>
+      <input type="email" id="emailInput" placeholder="אימייל" />
+      <input type="password" id="passwordInput" placeholder="סיסמה" />
+      <button onclick="login()">התחבר</button>
     </div>
 
-    <!-- מסך ראשי לאחר התחברות -->
-    <div id="mainScreen" style="display:none;">
-      <h2 id="businessTitle"></h2>
-      <button onclick="showForm('purchase')">רכישת מזוזות</button>
-      <button onclick="showForm('check')">בדיקת מזוזות</button>
-    </div>
-
-    <!-- טופס רכישה -->
-    <div id="purchaseForm" class="formSection" style="display:none;">
-      <h3>טופס רכישת מזוזות</h3>
-      <input type="text" placeholder="שם לקוח" />
-      <input type="tel" placeholder="טלפון" />
-      <select>
-        <option disabled selected>סוג מזוזה</option>
-        <option>ספרדי</option>
-        <option>אשכנזי</option>
-      </select>
-      <select>
-        <option disabled selected>סוג הידור</option>
-        <option>מהודר א א</option>
-        <option>מהודר ב</option>
-        <option>כשר לכתחילה</option>
-      </select>
-      <select>
-        <option disabled selected>גודל מזוזה</option>
-        <option>12</option>
-        <option>15</option>
-        <option>25</option>
-      </select>
-      <input type="number" placeholder="כמות" />
-      <input type="number" placeholder="מחיר כולל" />
-      <button onclick="downloadFile('קבלה.txt', 'פרטי רכישה')">צור קבלה</button>
-    </div>
-
-    <!-- טופס בדיקה -->
-    <div id="checkForm" class="formSection" style="display:none;">
-      <h3>טופס בדיקת מזוזות</h3>
-      <input type="text" placeholder="שם לקוח" />
-      <input type="tel" placeholder="טלפון" />
-      <input type="date" />
-      <input type="text" placeholder="מיקום המזוזה בבית" />
-      <select>
-        <option disabled selected>מצב המזוזה</option>
-        <option>מהודר</option>
-        <option>דרוש תיקון</option>
-        <option>כשר</option>
-      </select>
-      <textarea placeholder="תיקונים שבוצעו"></textarea>
-      <button onclick="downloadFile('דוח בדיקה.txt', 'פרטי בדיקה')">צור דוח בדיקה</button>
+    <div id="welcomeScreen" style="display:none;">
+      <h2 id="welcomeMessage"></h2>
+      <p>ברוך הבא למערכת CRM!</p>
     </div>
   </div>
 
   <script>
-    function startApp() {
-      const name = document.getElementById("businessInput").value;
-      if (name) {
-        document.getElementById("welcomeScreen").style.display = "none";
-        document.getElementById("mainScreen").style.display = "flex";
-        document.getElementById("businessTitle").textContent = `שלום ${name}`;
+    function login() {
+      const email = document.getElementById("emailInput").value;
+      const password = document.getElementById("passwordInput").value;
+
+      // דוגמה בסיסית – החלף במסד נתונים בעתיד
+      const validEmail = "david@example.com";
+      const validPassword = "123456";
+
+      if (email === validEmail && password === validPassword) {
+        document.getElementById("loginScreen").style.display = "none";
+        document.getElementById("welcomeScreen").style.display = "block";
+        document.getElementById("welcomeMessage").textContent = `שלום ${email}`;
+      } else {
+        alert("אימייל או סיסמה שגויים");
       }
-    }
-
-    function showForm(type) {
-      document.getElementById("purchaseForm").style.display = "none";
-      document.getElementById("checkForm").style.display = "none";
-
-      if (type === "purchase") {
-        document.getElementById("purchaseForm").style.display = "block";
-      } else if (type === "check") {
-        document.getElementById("checkForm").style.display = "block";
-      }
-    }
-
-    function downloadFile(filename, content) {
-      const blob = new Blob([content], { type: "text/plain" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = filename;
-      link.click();
     }
   </script>
 </body>
