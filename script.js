@@ -2,7 +2,7 @@ function startApp() {
   const name = document.getElementById("businessInput").value;
   if (name) {
     document.getElementById("welcomeScreen").style.display = "none";
-    document.getElementById("mainScreen").style.display = "block";
+    document.getElementById("mainScreen").style.display = "flex";
     document.getElementById("businessTitle").textContent = name;
   }
 }
