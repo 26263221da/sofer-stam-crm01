@@ -7,18 +7,22 @@
 </head>
 <body>
   <div class="container">
+    <!-- מסך פתיחה עם לוגו -->
     <div id="welcomeScreen">
+      <img src="img_4549.png" alt="לוגו העסק" class="logo" />
       <h1>ברוך הבא למערכת CRM</h1>
       <input type="text" id="businessInput" placeholder="הכנס שם העסק שלך" />
       <button onclick="startApp()">התחל</button>
     </div>
 
+    <!-- מסך ראשי לאחר התחברות -->
     <div id="mainScreen" style="display:none;">
       <h2 id="businessTitle"></h2>
       <button onclick="showForm('purchase')">רכישת מזוזות</button>
       <button onclick="showForm('check')">בדיקת מזוזות</button>
     </div>
 
+    <!-- טופס רכישה -->
     <div id="purchaseForm" class="formSection" style="display:none;">
       <h3>טופס רכישת מזוזות</h3>
       <input type="text" placeholder="שם לקוח" />
@@ -45,6 +49,7 @@
       <button onclick="downloadFile('קבלה.txt', 'פרטי רכישה')">צור קבלה</button>
     </div>
 
+    <!-- טופס בדיקה -->
     <div id="checkForm" class="formSection" style="display:none;">
       <h3>טופס בדיקת מזוזות</h3>
       <input type="text" placeholder="שם לקוח" />
@@ -61,6 +66,35 @@
       <button onclick="downloadFile('דוח בדיקה.txt', 'פרטי בדיקה')">צור דוח בדיקה</button>
     </div>
   </div>
-  <script src="script.js"></script>
+
+  <script>
+    function startApp() {
+      const name = document.getElementById("businessInput").value;
+      if (name) {
+        document.getElementById("welcomeScreen").style.display = "none";
+        document.getElementById("mainScreen").style.display = "flex";
+        document.getElementById("businessTitle").textContent = `שלום ${name}`;
+      }
+    }
+
+    function showForm(type) {
+      document.getElementById("purchaseForm").style.display = "none";
+      document.getElementById("checkForm").style.display = "none";
+
+      if (type === "purchase") {
+        document.getElementById("purchaseForm").style.display = "block";
+      } else if (type === "check") {
+        document.getElementById("checkForm").style.display = "block";
+      }
+    }
+
+    function downloadFile(filename, content) {
+      const blob = new Blob([content], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+    }
+  </script>
 </body>
 </html>
