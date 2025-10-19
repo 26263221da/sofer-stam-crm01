@@ -42,8 +42,10 @@
 
   <script>
     function toggleScreens(screen) {
-      document.getElementById("registerScreen").style.display = screen === "register" ? "block" : "none";
-      document.getElementById("loginScreen").style.display = screen === "login" ? "block" : "none";
+      const screens = ["registerScreen", "loginScreen", "welcomeScreen", "mainScreen"];
+      screens.forEach(id => {
+        document.getElementById(id).style.display = id === `${screen}Screen` ? "block" : "none";
+      });
     }
 
     function register() {
@@ -69,8 +71,7 @@
       const savedPassword = localStorage.getItem("userPassword");
 
       if (email === savedEmail && password === savedPassword) {
-        document.getElementById("loginScreen").style.display = "none";
-        document.getElementById("welcomeScreen").style.display = "block";
+        toggleScreens("welcome");
         document.getElementById("welcomeMessage").textContent = `שלום ${email}`;
       } else {
         alert("אימייל או סיסמה שגויים");
@@ -78,12 +79,10 @@
     }
 
     function goToMain() {
-      document.getElementById("welcomeScreen").style.display = "none";
-      document.getElementById("mainScreen").style.display = "block";
+      toggleScreens("main");
     }
 
     function logout() {
-      document.getElementById("mainScreen").style.display = "none";
       toggleScreens("login");
     }
   </script>
