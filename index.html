@@ -7,7 +7,7 @@
 </head>
 <body>
   <div class="container">
-    <!-- טופס רישום -->
+    <!-- רישום משתמש חדש -->
     <div id="registerScreen">
       <h1>רישום משתמש חדש</h1>
       <input type="email" id="regEmail" placeholder="אימייל" />
@@ -16,7 +16,7 @@
       <p>כבר רשום? <a href="#" onclick="toggleScreens('login')">התחבר כאן</a></p>
     </div>
 
-    <!-- טופס התחברות -->
+    <!-- התחברות -->
     <div id="loginScreen" style="display:none;">
       <h1>התחברות</h1>
       <input type="email" id="loginEmail" placeholder="אימייל" />
@@ -25,10 +25,18 @@
       <p>אין לך חשבון? <a href="#" onclick="toggleScreens('register')">צור אחד</a></p>
     </div>
 
-    <!-- מסך ברוך הבא -->
+    <!-- ברוך הבא -->
     <div id="welcomeScreen" style="display:none;">
       <h2 id="welcomeMessage"></h2>
-      <p>ברוך הבא למערכת CRM!</p>
+      <button onclick="goToMain()">המשך למערכת</button>
+    </div>
+
+    <!-- מסך ניהול CRM -->
+    <div id="mainScreen" style="display:none;">
+      <h2>מערכת CRM</h2>
+      <button onclick="alert('רכישת מזוזות')">רכישת מזוזות</button>
+      <button onclick="alert('בדיקת מזוזות')">בדיקת מזוזות</button>
+      <button onclick="logout()">התנתק</button>
     </div>
   </div>
 
@@ -67,6 +75,16 @@
       } else {
         alert("אימייל או סיסמה שגויים");
       }
+    }
+
+    function goToMain() {
+      document.getElementById("welcomeScreen").style.display = "none";
+      document.getElementById("mainScreen").style.display = "block";
+    }
+
+    function logout() {
+      document.getElementById("mainScreen").style.display = "none";
+      toggleScreens("login");
     }
   </script>
 </body>
