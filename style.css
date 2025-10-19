@@ -1,31 +1,21 @@
-body {
-  font-family: Arial, sans-serif;
-  direction: rtl;
-  padding: 20px;
-  background: #f9f9f9;
+function startApp() {
+  const name = document.getElementById("businessInput").value;
+  if (name) {
+    document.getElementById("welcomeScreen").style.display = "none";
+    document.getElementById("mainScreen").style.display = "block";
+    document.getElementById("businessTitle").textContent = name;
+  }
 }
 
-header {
-  background: #eee;
-  padding: 10px;
-  margin-bottom: 20px;
+function showForm(type) {
+  document.getElementById("purchaseForm").style.display = type === "purchase" ? "block" : "none";
+  document.getElementById("checkForm").style.display = type === "check" ? "block" : "none";
 }
 
-input, select, textarea, button {
-  display: block;
-  margin: 10px 0;
-  padding: 8px;
-  width: 100%;
-  max-width: 400px;
-}
-
-button {
-  background: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-section {
-  margin-bottom: 40px;
+function downloadFile(filename, content) {
+  const blob = new Blob([content], { type: "text/plain" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
 }
