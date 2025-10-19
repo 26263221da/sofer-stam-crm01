@@ -1,5 +1,4 @@
-/* בסיס */
-* {
+/* בסיס */* {
   box-sizing: border-box;
 }
 
@@ -79,4 +78,5 @@ a {
   h1, h2 {
     font-size: 24px;
   }
+}
 }
