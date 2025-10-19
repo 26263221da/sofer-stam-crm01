@@ -1,28 +1,46 @@
-function updateBusinessName() {
-  const name = document.getElementById(nameInput).value;
-  if (name) {
-    document.getElementById(businessName).textContent = name;
-  }
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  direction: rtl;
+  background: linear-gradient(to bottom right, #2c3e50, #4ca1af);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
-document.getElementById(purchaseForm).addEventListener(submit, function(e) {
-  e.preventDefault();
-  const fields = Array.from(e.target.elements).map(el = el.value).filter(v = v);
-  const text = `קבלה ללקוחn${fields.join(n)}`;
-  downloadFile(kabbala.txt, text);
-});
+.container {
+  width: 100%;
+  max-width: 500px;
+  padding: 20px;
+}
 
-document.getElementById(checkForm).addEventListener(submit, function(e) {
-  e.preventDefault();
-  const fields = Array.from(e.target.elements).map(el = el.value).filter(v = v);
-  const text = `דוח בדיקת מזוזותn${fields.join(n)}`;
-  downloadFile(duch_bedika.txt, text);
-});
+input, select, textarea, button {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+}
 
-function downloadFile(filename, content) {
-  const blob = new Blob([content], { type textplain });
-  const link = document.createElement(a);
-  link.href = URL.createObjectURL(blob);
-  link.download = filename;
-  link.click();
+button {
+  background-color: #ffffff;
+  color: #2c3e50;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background-color: #f1f1f1;
+}
+
+h1, h2, h3 {
+  text-align: center;
+}
+
+.formSection {
+  margin-top: 20px;
 }
