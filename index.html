@@ -2,79 +2,33 @@
 <html lang="he">
 <head>
   <meta charset="UTF-8">
-  <title>התחברות למערכת CRM</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      direction: rtl;
-      background: linear-gradient(to bottom right, #2c3e50, #4ca1af);
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      text-align: right;
-    }
-
-    .logo {
-      width: 100px;
-      height: auto;
-      margin: 30px 0 10px;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    }
-
-    .container {
-      width: 100%;
-      max-width: 400px;
-      padding: 20px;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    input, button {
-      width: 100%;
-      margin: 10px 0;
-      padding: 10px;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      box-sizing: border-box;
-      text-align: right;
-    }
-
-    button {
-      background-color: #ffffff;
-      color: #2c3e50;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    button:hover {
-      background-color: #f1f1f1;
-    }
-
-    h1, h2 {
-      text-align: center;
-    }
-  </style>
+  <title>מערכת CRM - רישום והתחברות</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <!-- לוגו האפליקציה בראש הדף -->
   <img src="img_4549.png" alt="לוגו CRM" class="logo" />
 
   <div class="container">
-    <div id="loginScreen">
-      <h1>התחברות</h1>
-      <input type="email" id="emailInput" placeholder="אימייל" />
-      <input type="password" id="passwordInput" placeholder="סיסמה" />
-      <button onclick="login()">התחבר</button>
+    <!-- טופס רישום -->
+    <div id="registerScreen">
+      <h1>רישום משתמש חדש</h1>
+      <input type="email" id="regEmail" placeholder="אימייל" />
+      <input type="password" id="regPassword" placeholder="סיסמה" />
+      <button onclick="register()">צור חשבון</button>
+      <p>כבר רשום? <a href="#" onclick="toggleScreens('login')">התחבר כאן</a></p>
     </div>
 
+    <!-- טופס התחברות -->
+    <div id="loginScreen" style="display:none;">
+      <h1>התחברות</h1>
+      <input type="email" id="loginEmail" placeholder="אימייל" />
+      <input type="password" id="loginPassword" placeholder="סיסמה" />
+      <button onclick="login()">התחבר</button>
+      <p>אין לך חשבון? <a href="#" onclick="toggleScreens('register')">צור אחד</a></p>
+    </div>
+
+    <!-- מסך ברוך הבא -->
     <div id="welcomeScreen" style="display:none;">
       <h2 id="welcomeMessage"></h2>
       <p>ברוך הבא למערכת CRM!</p>
@@ -82,15 +36,34 @@
   </div>
 
   <script>
+    function toggleScreens(screen) {
+      document.getElementById("registerScreen").style.display = screen === "register" ? "block" : "none";
+      document.getElementById("loginScreen").style.display = screen === "login" ? "block" : "none";
+    }
+
+    function register() {
+      const email = document.getElementById("regEmail").value.trim().toLowerCase();
+      const password = document.getElementById("regPassword").value;
+
+      if (!email || !password) {
+        alert("נא למלא את כל השדות");
+        return;
+      }
+
+      localStorage.setItem("userEmail", email);
+      localStorage.setItem("userPassword", password);
+      alert("החשבון נוצר בהצלחה!");
+      toggleScreens("login");
+    }
+
     function login() {
-      const email = document.getElementById("emailInput").value;
-      const password = document.getElementById("passwordInput").value;
+      const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+      const password = document.getElementById("loginPassword").value;
 
-      // דוגמה בסיסית – החלף במסד נתונים בעתיד
-      const validEmail = "david@example.com";
-      const validPassword = "123456";
+      const savedEmail = localStorage.getItem("userEmail");
+      const savedPassword = localStorage.getItem("userPassword");
 
-      if (email === validEmail && password === validPassword) {
+      if (email === savedEmail && password === savedPassword) {
         document.getElementById("loginScreen").style.display = "none";
         document.getElementById("welcomeScreen").style.display = "block";
         document.getElementById("welcomeMessage").textContent = `שלום ${email}`;
