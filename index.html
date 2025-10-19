@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8">
+  <title>מערכת CRM לסופר סת"ם</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1 id="businessName">שם העסק שלי</h1>
+    <input type="text" id="nameInput" placeholder="הכנס שם העסק" />
+    <button onclick="updateBusinessName()">עדכן</button>
+  </header>
+
+  <main>
+    <section>
+      <h2>רכישת מזוזות</h2>
+      <form id="purchaseForm">
+        <input type="text" placeholder="שם לקוח" required />
+        <input type="tel" placeholder="טלפון" required />
+        <select required>
+          <option disabled selected>סוג מזוזה</option>
+          <option>ספרדי</option>
+          <option>אשכנזי</option>
+        </select>
+        <select required>
+          <option disabled selected>סוג הידור</option>
+          <option>מהודר א א</option>
+          <option>מהודר ב</option>
+          <option>כשר לכתחילה</option>
+        </select>
+        <select required>
+          <option disabled selected>גודל מזוזה</option>
+          <option>12</option>
+          <option>15</option>
+          <option>25</option>
+        </select>
+        <input type="number" placeholder="כמות" required />
+        <input type="number" placeholder="מחיר כולל" required />
+        <button type="submit">צור קבלה</button>
+      </form>
+    </section>
+
+    <section>
+      <h2>בדיקת מזוזות</h2>
+      <form id="checkForm">
+        <input type="text" placeholder="שם לקוח" required />
+        <input type="tel" placeholder="טלפון" required />
+        <input type="date" required />
+        <input type="text" placeholder="מיקום המזוזה בבית" required />
+        <select required>
+          <option disabled selected>מצב המזוזה</option>
+          <option>מהודר</option>
+          <option>דרוש תיקון</option>
+          <option>כשר</option>
+        </select>
+        <textarea placeholder="תיקונים שבוצעו"></textarea>
+        <button type="submit">צור דוח בדיקה</button>
+      </form>
+    </section>
+  </main>
+</body>
+<script src="script.js"></script>
+</html>
