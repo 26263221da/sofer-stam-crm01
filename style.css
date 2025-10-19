@@ -1,21 +1,49 @@
-function startApp() {
-  const name = document.getElementById("businessInput").value;
-  if (name) {
-    document.getElementById("welcomeScreen").style.display = "none";
-    document.getElementById("mainScreen").style.display = "block";
-    document.getElementById("businessTitle").textContent = name;
-  }
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  direction: rtl;
+  background: linear-gradient(to bottom right, #2c3e50, #4ca1af);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  text-align: right;
 }
 
-function showForm(type) {
-  document.getElementById("purchaseForm").style.display = type === "purchase" ? "block" : "none";
-  document.getElementById("checkForm").style.display = type === "check" ? "block" : "none";
+.container {
+  width: 100%;
+  max-width: 500px;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-function downloadFile(filename, content) {
-  const blob = new Blob([content], { type: "text/plain" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = filename;
-  link.click();
+input, select, textarea, button {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+button {
+  background-color: #ffffff;
+  color: #2c3e50;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background-color: #f1f1f1;
+}
+
+h1, h2, h3 {
+  text-align: center;
+}
+
+.formSection {
+  margin-top: 20px;
 }
