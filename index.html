@@ -61,7 +61,8 @@
       try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         if (userCredential.user.emailVerified) {
-          alert("התחברת בהצלחה!");
+          document.getElementById("authScreen").style.display = "none";
+          document.getElementById("mainScreen").style.display = "block";
         } else {
           alert("האימייל שלך עדיין לא אומת.");
         }
@@ -112,68 +113,11 @@
         alert("שגיאה בשמירה: " + error.message);
       }
     };
-
-    window.verifyEmail = async function (e) {
-      e.preventDefault();
-      const email = document.getElementById("verifyEmail").value.trim();
-      alert("בדוק את תיבת הדואר של " + email + " לאימות.");
-    };
   </script>
 </head>
 <body>
-  <header>
-    <h1 id="businessName">שם העסק שלי</h1>
-    <input type="text" id="nameInput" placeholder="הכנס שם העסק" />
-    <button onclick="updateBusinessName()">עדכן</button>
-  </header>
-
-  <main>
-    <section>
-      <h2>רכישת מזוזות</h2>
-      <form id="purchaseForm" onsubmit="savePurchase(event)">
-        <input type="text" placeholder="שם לקוח" required />
-        <input type="tel" placeholder="טלפון" required />
-        <select required>
-          <option disabled selected>סוג מזוזה</option>
-          <option>ספרדי</option>
-          <option>אשכנזי</option>
-        </select>
-        <select required>
-          <option disabled selected>סוג הידור</option>
-          <option>מהודר א א</option>
-          <option>מהודר ב</option>
-          <option>כשר לכתחילה</option>
-        </select>
-        <select required>
-          <option disabled selected>גודל מזוזה</option>
-          <option>12</option>
-          <option>15</option>
-          <option>25</option>
-        </select>
-        <input type="number" placeholder="כמות" required />
-        <input type="number" placeholder="מחיר כולל" required />
-        <button type="submit">צור קבלה</button>
-      </form>
-    </section>
-
-    <section>
-      <h2>בדיקת מזוזות</h2>
-      <form id="checkForm" onsubmit="saveCheck(event)">
-        <input type="text" placeholder="שם לקוח" required />
-        <input type="tel" placeholder="טלפון" required />
-        <input type="date" required />
-        <input type="text" placeholder="מיקום המזוזה בבית" required />
-        <select required>
-          <option disabled selected>מצב המזוזה</option>
-          <option>מהודר</option>
-          <option>דרוש תיקון</option>
-          <option>כשר</option>
-        </select>
-        <textarea placeholder="תיקונים שבוצעו"></textarea>
-        <button type="submit">צור דוח בדיקה</button>
-      </form>
-    </section>
-
+  <!-- מסך התחברות ורישום -->
+  <div id="authScreen">
     <section>
       <h2>הרשמה למערכת</h2>
       <form onsubmit="register(event)">
@@ -191,14 +135,63 @@
         <button type="submit">התחבר</button>
       </form>
     </section>
+  </div>
 
-    <section>
-      <h2>אימות אימייל</h2>
-      <form onsubmit="verifyEmail(event)">
-        <input type="email" id="verifyEmail" placeholder="אימייל לאימות" required />
-        <button type="submit">אמת אימייל</button>
-      </form>
-    </section>
-  </main>
+  <!-- ממשק מלא לאחר התחברות -->
+  <div id="mainScreen" style="display:none;">
+    <header>
+      <h1 id="businessName">שם העסק שלי</h1>
+      <input type="text" id="nameInput" placeholder="הכנס שם העסק" />
+      <button onclick="updateBusinessName()">עדכן</button>
+    </header>
+
+    <main>
+      <section>
+        <h2>רכישת מזוזות</h2>
+        <form id="purchaseForm" onsubmit="savePurchase(event)">
+          <input type="text" placeholder="שם לקוח" required />
+          <input type="tel" placeholder="טלפון" required />
+          <select required>
+            <option disabled selected>סוג מזוזה</option>
+            <option>ספרדי</option>
+            <option>אשכנזי</option>
+          </select>
+          <select required>
+            <option disabled selected>סוג הידור</option>
+            <option>מהודר א א</option>
+            <option>מהודר ב</option>
+            <option>כשר לכתחילה</option>
+          </select>
+          <select required>
+            <option disabled selected>גודל מזוזה</option>
+            <option>12</option>
+            <option>15</option>
+            <option>25</option>
+          </select>
+          <input type="number" placeholder="כמות" required />
+          <input type="number" placeholder="מחיר כולל" required />
+          <button type="submit">צור קבלה</button>
+        </form>
+      </section>
+
+      <section>
+        <h2>בדיקת מזוזות</h2>
+        <form id="checkForm" onsubmit="saveCheck(event)">
+          <input type="text" placeholder="שם לקוח" required />
+          <input type="tel" placeholder="טלפון" required />
+          <input type="date" required />
+          <input type="text" placeholder="מיקום המזוזה בבית" required />
+          <select required>
+            <option disabled selected>מצב המזוזה</option>
+            <option>מהודר</option>
+            <option>דרוש תיקון</option>
+            <option>כשר</option>
+          </select>
+          <textarea placeholder="תיקונים שבוצעו"></textarea>
+          <button type="submit">צור דוח בדיקה</button>
+        </form>
+      </section>
+    </main>
+  </div>
 </body>
 </html>
