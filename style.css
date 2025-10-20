@@ -1,4 +1,5 @@
-/* בסיס */* {
+/* בסיס */
+* {
   box-sizing: border-box;
 }
 
@@ -7,8 +8,8 @@ html, body {
   padding: 0;
   font-family: 'Segoe UI', sans-serif;
   direction: rtl;
-  background: linear-gradient(to bottom right, #2c3e50, #4ca1af);
-  color: white;
+  background: linear-gradient(to bottom right, #e8f5e9, #c8e6c9); /* ירוק בהיר */
+  color: #2e7d32; /* ירוק כהה */
   min-height: 100vh;
   width: 100%;
   display: flex;
@@ -18,6 +19,7 @@ html, body {
   text-align: right;
 }
 
+/* מיכל ראשי */
 .container {
   width: 100%;
   max-width: 500px;
@@ -27,39 +29,46 @@ html, body {
   align-items: center;
 }
 
+/* שדות קלט וכפתורים */
 input, button {
   width: 100%;
   margin: 10px 0;
   padding: 16px;
-  border: none;
+  border: 2px solid #a5d6a7;
   border-radius: 8px;
   font-size: 18px;
   text-align: right;
+  background-color: #ffffff;
+  color: #2e7d32;
 }
 
+/* כפתורים */
 button {
-  background-color: #ffffff;
-  color: #2c3e50;
+  background-color: #66bb6a;
+  color: #ffffff;
   font-weight: bold;
   cursor: pointer;
   transition: background 0.3s;
 }
 
 button:hover {
-  background-color: #f1f1f1;
+  background-color: #4caf50;
 }
 
+/* כותרות */
 h1, h2 {
   text-align: center;
   font-size: 28px;
+  margin-bottom: 10px;
 }
 
+/* טקסטים וקישורים */
 p, a {
   font-size: 18px;
 }
 
 a {
-  color: #fff;
+  color: #2e7d32;
   text-decoration: underline;
   cursor: pointer;
 }
@@ -78,5 +87,4 @@ a {
   h1, h2 {
     font-size: 24px;
   }
-}
 }
