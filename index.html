@@ -94,6 +94,13 @@
       }
     };
 
+    // חזרה למסך בחירה
+    window.goBackToChoice = function () {
+      document.getElementById("purchaseScreen").style.display = "none";
+      document.getElementById("checkScreen").style.display = "none";
+      document.getElementById("choiceScreen").style.display = "block";
+    };
+
     // שמירת רכישה
     window.savePurchase = async function (e) {
       e.preventDefault();
@@ -198,12 +205,4 @@
         <option disabled selected>גודל מזוזה</option>
         <option>12</option>
         <option>15</option>
-        <option>25</option>
-      </select>
-      <input type="number" placeholder="כמות" required />
-      <input type="number" placeholder="מחיר כולל" required />
-      <button type="submit">צור קבלה</button>
-    </form>
-  </div>
-
-  <!-- בד
+        <option>25</
