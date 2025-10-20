@@ -2,89 +2,203 @@
 <html lang="he">
 <head>
   <meta charset="UTF-8">
-  <title>מערכת CRM - רישום והתחברות</title>
+  <title>מערכת הסופר</title>
   <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div class="container">
-    <!-- רישום משתמש חדש -->
-    <div id="registerScreen">
-      <h1>רישום משתמש חדש</h1>
-      <input type="email" id="regEmail" placeholder="אימייל" />
-      <input type="password" id="regPassword" placeholder="סיסמה" />
-      <button onclick="register()">צור חשבון</button>
-      <p>כבר רשום? <a href="#" onclick="toggleScreens('login')">התחבר כאן</a></p>
-    </div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      sendEmailVerification,
+      signInWithEmailAndPassword
+    } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc
+    } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
 
-    <!-- התחברות -->
-    <div id="loginScreen" style="display:none;">
-      <h1>התחברות</h1>
-      <input type="email" id="loginEmail" placeholder="אימייל" />
-      <input type="password" id="loginPassword" placeholder="סיסמה" />
-      <button onclick="login()">התחבר</button>
-      <p>אין לך חשבון? <a href="#" onclick="toggleScreens('register')">צור אחד</a></p>
-    </div>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCZUF-nb3a1_VH8NnGiWSpmaywKTeYaP9E",
+      authDomain: "sofer-stam-crm-e9e0a.firebaseapp.com",
+      projectId: "sofer-stam-crm-e9e0a",
+      storageBucket: "sofer-stam-crm-e9e0a.appspot.com",
+      messagingSenderId: "582539972037",
+      appId: "1:582539972037:web:7905e03773105efd4bcfac",
+      measurementId: "G-YB70WJQRY1"
+    };
 
-    <!-- ברוך הבא -->
-    <div id="welcomeScreen" style="display:none;">
-      <h2 id="welcomeMessage"></h2>
-      <button onclick="goToMain()">המשך למערכת</button>
-    </div>
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    <!-- מסך ניהול CRM -->
-    <div id="mainScreen" style="display:none;">
-      <h2>מערכת CRM</h2>
-      <button onclick="alert('רכישת מזוזות')">רכישת מזוזות</button>
-      <button onclick="alert('בדיקת מזוזות')">בדיקת מזוזות</button>
-      <button onclick="logout()">התנתק</button>
-    </div>
-  </div>
+    window.updateBusinessName = function () {
+      const name = document.getElementById("nameInput").value.trim();
+      if (name) {
+        document.getElementById("businessName").textContent = name;
+      }
+    };
 
-  <script>
-    function toggleScreens(screen) {
-      const screens = ["registerScreen", "loginScreen", "welcomeScreen", "mainScreen"];
-      screens.forEach(id => {
-        document.getElementById(id).style.display = id === `${screen}Screen` ? "block" : "none";
-      });
-    }
-
-    function register() {
-      const email = document.getElementById("regEmail").value.trim().toLowerCase();
+    window.register = async function (e) {
+      e.preventDefault();
+      const email = document.getElementById("regEmail").value.trim();
       const password = document.getElementById("regPassword").value;
 
-      if (!email || !password) {
-        alert("נא למלא את כל השדות");
-        return;
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await sendEmailVerification(userCredential.user);
+        alert("נרשמת בהצלחה! נשלח אליך אימייל לאימות.");
+      } catch (error) {
+        alert("שגיאה ברישום: " + error.message);
       }
+    };
 
-      localStorage.setItem("userEmail", email);
-      localStorage.setItem("userPassword", password);
-      alert("החשבון נוצר בהצלחה!");
-      toggleScreens("login");
-    }
-
-    function login() {
-      const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+    window.login = async function (e) {
+      e.preventDefault();
+      const email = document.getElementById("loginEmail").value.trim();
       const password = document.getElementById("loginPassword").value;
 
-      const savedEmail = localStorage.getItem("userEmail");
-      const savedPassword = localStorage.getItem("userPassword");
-
-      if (email === savedEmail && password === savedPassword) {
-        toggleScreens("welcome");
-        document.getElementById("welcomeMessage").textContent = `שלום ${email}`;
-      } else {
-        alert("אימייל או סיסמה שגויים");
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        if (userCredential.user.emailVerified) {
+          alert("התחברת בהצלחה!");
+        } else {
+          alert("האימייל שלך עדיין לא אומת.");
+        }
+      } catch (error) {
+        alert("שגיאה בהתחברות: " + error.message);
       }
-    }
+    };
 
-    function goToMain() {
-      toggleScreens("main");
-    }
+    window.savePurchase = async function (e) {
+      e.preventDefault();
+      const form = document.getElementById("purchaseForm");
+      const data = {
+        name: form[0].value,
+        phone: form[1].value,
+        type: form[2].value,
+        hidur: form[3].value,
+        size: form[4].value,
+        quantity: form[5].value,
+        price: form[6].value,
+        createdAt: new Date()
+      };
+      try {
+        await addDoc(collection(db, "purchases"), data);
+        alert("קבלה נשמרה!");
+        form.reset();
+      } catch (error) {
+        alert("שגיאה בשמירה: " + error.message);
+      }
+    };
 
-    function logout() {
-      toggleScreens("login");
-    }
+    window.saveCheck = async function (e) {
+      e.preventDefault();
+      const form = document.getElementById("checkForm");
+      const data = {
+        name: form[0].value,
+        phone: form[1].value,
+        date: form[2].value,
+        location: form[3].value,
+        status: form[4].value,
+        notes: form[5].value,
+        createdAt: new Date()
+      };
+      try {
+        await addDoc(collection(db, "checks"), data);
+        alert("דוח בדיקה נשמר!");
+        form.reset();
+      } catch (error) {
+        alert("שגיאה בשמירה: " + error.message);
+      }
+    };
+
+    window.verifyEmail = async function (e) {
+      e.preventDefault();
+      const email = document.getElementById("verifyEmail").value.trim();
+      alert("בדוק את תיבת הדואר של " + email + " לאימות.");
+    };
   </script>
+</head>
+<body>
+  <header>
+    <h1 id="businessName">שם העסק שלי</h1>
+    <input type="text" id="nameInput" placeholder="הכנס שם העסק" />
+    <button onclick="updateBusinessName()">עדכן</button>
+  </header>
+
+  <main>
+    <section>
+      <h2>רכישת מזוזות</h2>
+      <form id="purchaseForm" onsubmit="savePurchase(event)">
+        <input type="text" placeholder="שם לקוח" required />
+        <input type="tel" placeholder="טלפון" required />
+        <select required>
+          <option disabled selected>סוג מזוזה</option>
+          <option>ספרדי</option>
+          <option>אשכנזי</option>
+        </select>
+        <select required>
+          <option disabled selected>סוג הידור</option>
+          <option>מהודר א א</option>
+          <option>מהודר ב</option>
+          <option>כשר לכתחילה</option>
+        </select>
+        <select required>
+          <option disabled selected>גודל מזוזה</option>
+          <option>12</option>
+          <option>15</option>
+          <option>25</option>
+        </select>
+        <input type="number" placeholder="כמות" required />
+        <input type="number" placeholder="מחיר כולל" required />
+        <button type="submit">צור קבלה</button>
+      </form>
+    </section>
+
+    <section>
+      <h2>בדיקת מזוזות</h2>
+      <form id="checkForm" onsubmit="saveCheck(event)">
+        <input type="text" placeholder="שם לקוח" required />
+        <input type="tel" placeholder="טלפון" required />
+        <input type="date" required />
+        <input type="text" placeholder="מיקום המזוזה בבית" required />
+        <select required>
+          <option disabled selected>מצב המזוזה</option>
+          <option>מהודר</option>
+          <option>דרוש תיקון</option>
+          <option>כשר</option>
+        </select>
+        <textarea placeholder="תיקונים שבוצעו"></textarea>
+        <button type="submit">צור דוח בדיקה</button>
+      </form>
+    </section>
+
+    <section>
+      <h2>הרשמה למערכת</h2>
+      <form onsubmit="register(event)">
+        <input type="email" id="regEmail" placeholder="אימייל" required />
+        <input type="password" id="regPassword" placeholder="סיסמה" required />
+        <button type="submit">הרשמה</button>
+      </form>
+    </section>
+
+    <section>
+      <h2>התחברות</h2>
+      <form onsubmit="login(event)">
+        <input type="email" id="loginEmail" placeholder="אימייל" required />
+        <input type="password" id="loginPassword" placeholder="סיסמה" required />
+        <button type="submit">התחבר</button>
+      </form>
+    </section>
+
+    <section>
+      <h2>אימות אימייל</h2>
+      <form onsubmit="verifyEmail(event)">
+        <input type="email" id="verifyEmail" placeholder="אימייל לאימות" required />
+        <button type="submit">אמת אימייל</button>
+      </form>
+    </section>
+  </main>
 </body>
 </html>
