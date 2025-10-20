@@ -32,6 +32,13 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    // החלפת מסכים
+    window.toggleScreens = function (screen) {
+      document.getElementById("registerScreen").style.display = screen === "register" ? "block" : "none";
+      document.getElementById("loginScreen").style.display = screen === "login" ? "block" : "none";
+    };
+
+    // רישום
     window.register = async function (e) {
       e.preventDefault();
       const email = document.getElementById("regEmail").value.trim();
@@ -46,6 +53,7 @@
       }
     };
 
+    // התחברות
     window.login = async function (e) {
       e.preventDefault();
       const email = document.getElementById("loginEmail").value.trim();
@@ -54,10 +62,10 @@
       try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         if (userCredential.user.emailVerified) {
-          document.getElementById("authScreen").style.display = "none";
+          document.getElementById("loginScreen").style.display = "none";
           document.getElementById("choiceScreen").style.display = "block";
         } else {
-          document.getElementById("authScreen").style.display = "none";
+          document.getElementById("loginScreen").style.display = "none";
           document.getElementById("verifyScreen").style.display = "block";
         }
       } catch (error) {
@@ -65,6 +73,7 @@
       }
     };
 
+    // המשך לאחר אימות
     window.continueAfterVerification = function () {
       const user = auth.currentUser;
       if (user && user.emailVerified) {
@@ -75,6 +84,7 @@
       }
     };
 
+    // בחירת מסך
     window.chooseScreen = function (type) {
       document.getElementById("choiceScreen").style.display = "none";
       if (type === "purchase") {
@@ -84,6 +94,7 @@
       }
     };
 
+    // שמירת רכישה
     window.savePurchase = async function (e) {
       e.preventDefault();
       const form = document.getElementById("purchaseForm");
@@ -106,6 +117,7 @@
       }
     };
 
+    // שמירת בדיקה
     window.saveCheck = async function (e) {
       e.preventDefault();
       const form = document.getElementById("checkForm");
@@ -129,25 +141,26 @@
   </script>
 </head>
 <body>
-  <!-- מסך התחברות ורישום -->
-  <div id="authScreen">
-    <section>
-      <h2>הרשמה</h2>
-      <form onsubmit="register(event)">
-        <input type="email" id="regEmail" placeholder="אימייל" required />
-        <input type="password" id="regPassword" placeholder="סיסמה" required />
-        <button type="submit">הרשמה</button>
-      </form>
-    </section>
+  <!-- מסך הרשמה -->
+  <div id="registerScreen">
+    <h2>הרשמה</h2>
+    <form onsubmit="register(event)">
+      <input type="email" id="regEmail" placeholder="אימייל" required />
+      <input type="password" id="regPassword" placeholder="סיסמה" required />
+      <button type="submit">הרשמה</button>
+    </form>
+    <p>יש לכם חשבון? <a href="#" onclick="toggleScreens('login')">התחברו כאן</a></p>
+  </div>
 
-    <section>
-      <h2>התחברות</h2>
-      <form onsubmit="login(event)">
-        <input type="email" id="loginEmail" placeholder="אימייל" required />
-        <input type="password" id="loginPassword" placeholder="סיסמה" required />
-        <button type="submit">התחבר</button>
-      </form>
-    </section>
+  <!-- מסך התחברות -->
+  <div id="loginScreen" style="display:none;">
+    <h2>התחברות</h2>
+    <form onsubmit="login(event)">
+      <input type="email" id="loginEmail" placeholder="אימייל" required />
+      <input type="password" id="loginPassword" placeholder="סיסמה" required />
+      <button type="submit">התחבר</button>
+    </form>
+    <p>אין לכם חשבון? <a href="#" onclick="toggleScreens('register')">הרשמה</a></p>
   </div>
 
   <!-- מסך אימות -->
@@ -193,20 +206,4 @@
     </form>
   </div>
 
-  <!-- בדיקת מזוזות -->
-  <div id="checkScreen" style="display:none;">
-    <h2>בדיקת מזוזות</h2>
-    <form id="checkForm" onsubmit="saveCheck(event)">
-      <input type="text" placeholder="שם לקוח" required />
-      <input type="tel" placeholder="טלפון" required />
-      <input type="date" required />
-      <input type="text" placeholder="מיקום המזוזה בבית" required />
-      <select required>
-        <option disabled selected>מצב המזוזה</option>
-        <option>מהודר</option>
-        <option>דרוש תיקון</option>
-        <option>כשר</option>
-      </select>
-      <textarea placeholder="תיקונים שבוצעו"></textarea>
-      <button type="submit">צור דוח בדיקה</button>
-    </form>
+  <!-- בד
