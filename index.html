@@ -3,194 +3,118 @@
 <head>
   <meta charset="UTF-8">
   <title>מערכת הסופר</title>
-  <style>
-    body { font-family: Arial, sans-serif; direction: rtl; text-align: right; }
-    input, select, button { margin: 5px; padding: 5px; }
-    #receipt, #receiptsScreen, #reportsScreen { border: 1px solid #000; padding: 10px; margin-top: 20px; }
-  </style>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
-    import {
-      getAuth,
-      createUserWithEmailAndPassword,
-      sendEmailVerification,
-      signInWithEmailAndPassword
-    } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      getDocs
-    } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <!-- מסך הרשמה -->
+  <div id="registerScreen">
+    <h2>הרשמה</h2>
+    <form onsubmit="register(event)">
+      <input type="email" id="regEmail" placeholder="אימייל" required />
+      <input type="password" id="regPassword" placeholder="סיסמה" required />
+      <button type="submit">הרשמה</button>
+    </form>
+    <p>יש לכם חשבון? <a href="#" onclick="toggleScreens('login')">התחברו כאן</a></p>
+  </div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCZUF-nb3a1_VH8NnGiWSpmaywKTeYaP9E",
-      authDomain: "sofer-stam-crm-e9e0a.firebaseapp.com",
-      projectId: "sofer-stam-crm-e9e0a",
-      storageBucket: "sofer-stam-crm-e9e0a.appspot.com",
-      messagingSenderId: "582539972037",
-      appId: "1:582539972037:web:7905e03773105efd4bcfac",
-      measurementId: "G-YB70WJQRY1"
-    };
+  <!-- מסך התחברות -->
+  <div id="loginScreen" style="display:none;">
+    <h2>התחברות</h2>
+    <form onsubmit="login(event)">
+      <input type="email" id="loginEmail" placeholder="אימייל" required />
+      <input type="password" id="loginPassword" placeholder="סיסמה" required />
+      <button type="submit">התחבר</button>
+    </form>
+    <p>אין לכם חשבון? <a href="#" onclick="toggleScreens('register')">הרשמה</a></p>
+  </div>
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+  <!-- מסך אימות -->
+  <div id="verifyScreen" style="display:none;">
+    <h2>אימות אימייל</h2>
+    <p>נשלח אליך אימייל לאימות. לאחר שתאמת, לחץ על הכפתור:</p>
+    <button onclick="continueAfterVerification()">המשך לאחר אימות</button>
+  </div>
 
-    // מעבר בין מסכים
-    window.toggleScreens = function (screen) {
-      document.getElementById("registerScreen").style.display = screen === "register" ? "block" : "none";
-      document.getElementById("loginScreen").style.display = screen === "login" ? "block" : "none";
-    };
+  <!-- מסך בחירה -->
+  <div id="choiceScreen" style="display:none;">
+    <h2>בחר פעולה</h2>
+    <button onclick="chooseScreen('purchase')">🛒 רכישת מזוזות</button>
+    <button onclick="chooseScreen('check')">🕵️ בדיקת מזוזות</button>
+    <button onclick="showReceipts()">📑 צפייה בקבלות</button>
+    <button onclick="showReports()">📊 דוחות חודשיים</button>
+  </div>
 
-    // רישום
-    window.register = async function (e) {
-      e.preventDefault();
-      const email = document.getElementById("regEmail").value.trim();
-      const password = document.getElementById("regPassword").value;
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        await sendEmailVerification(userCredential.user);
-        alert("נרשמת בהצלחה! נשלח אליך אימייל לאימות.");
-      } catch (error) {
-        alert("שגיאה ברישום: " + error.message);
-      }
-    };
+  <!-- מסך רכישת מזוזות -->
+  <div id="purchaseScreen" style="display:none;">
+    <h2>רכישת מזוזות</h2>
+    <form id="purchaseForm" onsubmit="savePurchase(event)">
+      <input type="text" placeholder="שם לקוח" required />
+      <input type="tel" placeholder="טלפון" required />
+      <select required>
+        <option disabled selected>סוג מזוזה</option>
+        <option>ספרדי</option>
+        <option>אשכנזי</option>
+      </select>
+      <select required>
+        <option disabled selected>סוג הידור</option>
+        <option>מהודר א א</option>
+        <option>מהודר ב</option>
+        <option>כשר לכתחילה</option>
+      </select>
+      <select required>
+        <option disabled selected>גודל מזוזה</option>
+        <option>12</option>
+        <option>15</option>
+        <option>25</option>
+      </select>
+      <input type="number" placeholder="כמות" required />
+      <input type="number" placeholder="מחיר כולל" required />
+      <button type="submit">צור קבלה</button>
+    </form>
+    <button onclick="goBackToChoice()">⬅ חזור</button>
+  </div>
 
-    // התחברות
-    window.login = async function (e) {
-      e.preventDefault();
-      const email = document.getElementById("loginEmail").value.trim();
-      const password = document.getElementById("loginPassword").value;
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        if (userCredential.user.emailVerified) {
-          document.getElementById("loginScreen").style.display = "none";
-          document.getElementById("choiceScreen").style.display = "block";
-        } else {
-          document.getElementById("loginScreen").style.display = "none";
-          document.getElementById("verifyScreen").style.display = "block";
-        }
-      } catch (error) {
-        alert("שגיאה בהתחברות: " + error.message);
-      }
-    };
+  <!-- מסך בדיקת מזוזות -->
+  <div id="checkScreen" style="display:none;">
+    <h2>בדיקת מזוזות</h2>
+    <form id="checkForm" onsubmit="saveCheck(event)">
+      <input type="text" placeholder="שם לקוח" required />
+      <input type="tel" placeholder="טלפון" required />
+      <input type="date" required />
+      <input type="text" placeholder="מיקום המזוזה" required />
+      <select required>
+        <option disabled selected>סטטוס</option>
+        <option>כשרה</option>
+        <option>פסולה</option>
+      </select>
+      <textarea placeholder="הערות"></textarea>
+      <button type="submit">שמור בדיקה</button>
+    </form>
+    <button onclick="goBackToChoice()">⬅ חזור</button>
+  </div>
 
-    // המשך לאחר אימות
-    window.continueAfterVerification = function () {
-      const user = auth.currentUser;
-      if (user && user.emailVerified) {
-        document.getElementById("verifyScreen").style.display = "none";
-        document.getElementById("choiceScreen").style.display = "block";
-      } else {
-        alert("האימייל עדיין לא אומת.");
-      }
-    };
+  <!-- מסך קבלה -->
+  <div id="receipt" style="display:none;">
+    <h3>קבלה</h3>
+    <p id="receiptContent"></p>
+    <button onclick="window.print()">🖨️ הדפס קבלה</button>
+    <button onclick="goBackToChoice()">⬅ חזור</button>
+  </div>
 
-    // בחירת מסך
-    window.chooseScreen = function (type) {
-      document.getElementById("choiceScreen").style.display = "none";
-      if (type === "purchase") document.getElementById("purchaseScreen").style.display = "block";
-      if (type === "check") document.getElementById("checkScreen").style.display = "block";
-    };
+  <!-- מסך צפייה בקבלות -->
+  <div id="receiptsScreen" style="display:none;">
+    <h2>📑 רשימת קבלות</h2>
+    <input type="text" id="searchInput" placeholder="חפש לפי שם או טלפון" oninput="filterReceipts()" />
+    <ul id="receiptsList"></ul>
+    <button onclick="goBackToChoice()">⬅ חזור</button>
+  </div>
 
-    // חזרה למסך בחירה
-    window.goBackToChoice = function () {
-      ["purchaseScreen","checkScreen","receipt","receiptsScreen","reportsScreen"].forEach(id=>{
-        document.getElementById(id).style.display="none";
-      });
-      document.getElementById("choiceScreen").style.display = "block";
-    };
-
-    // שמירת רכישה + יצירת קבלה
-    window.savePurchase = async function (e) {
-      e.preventDefault();
-      const form = document.getElementById("purchaseForm");
-      const data = {
-        name: form[0].value,
-        phone: form[1].value,
-        type: form[2].value,
-        hidur: form[3].value,
-        size: form[4].value,
-        quantity: form[5].value,
-        price: form[6].value,
-        createdAt: new Date()
-      };
-      try {
-        await addDoc(collection(db, "purchases"), data);
-        document.getElementById("purchaseScreen").style.display = "none";
-        document.getElementById("receipt").style.display = "block";
-        document.getElementById("receiptContent").innerHTML = `
-          <strong>שם לקוח:</strong> ${data.name}<br>
-          <strong>טלפון:</strong> ${data.phone}<br>
-          <strong>סוג מזוזה:</strong> ${data.type}<br>
-          <strong>הידור:</strong> ${data.hidur}<br>
-          <strong>גודל:</strong> ${data.size}<br>
-          <strong>כמות:</strong> ${data.quantity}<br>
-          <strong>מחיר כולל:</strong> ${data.price} ₪<br>
-          <strong>תאריך:</strong> ${data.createdAt.toLocaleString()}
-        `;
-        form.reset();
-      } catch (error) {
-        alert("שגיאה בשמירה: " + error.message);
-      }
-    };
-
-    // שמירת בדיקה
-    window.saveCheck = async function (e) {
-      e.preventDefault();
-      const form = document.getElementById("checkForm");
-      const data = {
-        name: form[0].value,
-        phone: form[1].value,
-        date: form[2].value,
-        location: form[3].value,
-        status: form[4].value,
-        notes: form[5].value,
-        createdAt: new Date()
-      };
-      try {
-        await addDoc(collection(db, "checks"), data);
-        alert("דוח בדיקה נשמר!");
-        form.reset();
-      } catch (error) {
-        alert("שגיאה בשמירה: " + error.message);
-      }
-    };
-
-    // צפייה בקבלות
-    window.showReceipts = async function () {
-      document.getElementById("choiceScreen").style.display = "none";
-      document.getElementById("receiptsScreen").style.display = "block";
-      const querySnapshot = await getDocs(collection(db, "purchases"));
-      const receiptsList = document.getElementById("receiptsList");
-      receiptsList.innerHTML = "";
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        const li = document.createElement("li");
-        li.textContent = `${data.name} | ${data.phone} | ${data.quantity} מזוזות | ${data.price} ₪`;
-        receiptsList.appendChild(li);
-      });
-    };
-
-    // חיפוש לקוחות
-    window.filterReceipts = function () {
-      const searchValue = document.getElementById("searchInput").value.toLowerCase();
-      const items = document.querySelectorAll("#receiptsList li");
-      items.forEach((item) => {
-        item.style.display = item.textContent.toLowerCase().includes(searchValue) ? "list-item" : "none";
-      });
-    };
-
-    // דוחות חודשיים
-    window.showReports = async function () {
-      document.getElementById("choiceScreen").style.display = "none";
-      document.getElementById("reportsScreen").style.display = "block";
-      const querySnapshot = await getDocs(collection(db, "purchases"));
-      let totalQuantity = 0;
-      let totalRevenue = 0;
-      const now = new Date();
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        const date = data.createdAt.seconds ? new Date(data.createdAt.seconds * 1000) : new Date(data.createdAt);
-        if (date.get
+  <!-- מסך דוחות -->
+  <div id="reportsScreen" style="display:none;">
+    <h2>📊 דוחות חודשיים</h2>
+    <p id="reportSummary"></p>
+    <button onclick="goBackToChoice()">⬅ חזור</button>
+  </div>
+</body>
+</html>
