@@ -1,47 +1,40 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="he" dir="rtl">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>מערכת הסופר</title>
   <link rel="stylesheet" href="style.css">
-  <script type="module" src="app.js"></script>
-</head>
-<body><!DOCTYPE html>
-<html lang="he">
-<head>
-  <meta charset="UTF-8">
-  <title>מערכת הסופר</title>
-  <link rel="stylesheet" href="style.css">
-  <script type="module" src="app.js"></script>
+  <script type="module" src="app.js" defer></script>
 </head>
 <body>
   <!-- מסך הרשמה -->
   <div id="registerScreen">
     <h2>הרשמה</h2>
-    <form onsubmit="register(event)">
-      <input type="email" id="regEmail" placeholder="אימייל" required />
-      <input type="password" id="regPassword" placeholder="סיסמה" required />
+    <form id="registerForm" onsubmit="register(event)">
+      <input type="email" id="regEmail" name="regEmail" placeholder="אימייל" required />
+      <input type="password" id="regPassword" name="regPassword" placeholder="סיסמה" required />
       <button type="submit">הרשמה</button>
     </form>
-    <p>יש לכם חשבון? <a href="#" onclick="toggleScreens('login')">התחברו כאן</a></p>
+    <p>יש לכם חשבון? <a href="#" onclick="toggleScreens('login'); return false;">התחברו כאן</a></p>
   </div>
 
   <!-- מסך התחברות -->
   <div id="loginScreen" style="display:none;">
     <h2>התחברות</h2>
-    <form onsubmit="login(event)">
-      <input type="email" id="loginEmail" placeholder="אימייל" required />
-      <input type="password" id="loginPassword" placeholder="סיסמה" required />
+    <form id="loginForm" onsubmit="login(event)">
+      <input type="email" id="loginEmail" name="loginEmail" placeholder="אימייל" required />
+      <input type="password" id="loginPassword" name="loginPassword" placeholder="סיסמה" required />
       <button type="submit">התחבר</button>
     </form>
-    <p>אין לכם חשבון? <a href="#" onclick="toggleScreens('register')">הרשמה</a></p>
+    <p>אין לכם חשבון? <a href="#" onclick="toggleScreens('register'); return false;">הרשמה</a></p>
   </div>
 
   <!-- מסך אימות -->
   <div id="verifyScreen" style="display:none;">
     <h2>אימות אימייל</h2>
     <p>נשלח אליך אימייל לאימות. לאחר שתאמת, לחץ על הכפתור:</p>
-    <button onclick="continueAfterVerification()">המשך לאחר אימות</button>
+    <button id="verifyContinueBtn" onclick="continueAfterVerification()">המשך לאחר אימות</button>
   </div>
 
   <!-- מסך בחירה -->
@@ -57,27 +50,27 @@
   <div id="purchaseScreen" style="display:none;">
     <h2>רכישת מזוזות</h2>
     <form id="purchaseForm" onsubmit="savePurchase(event)">
-      <input type="text" placeholder="שם לקוח" required />
-      <input type="tel" placeholder="טלפון" required />
-      <select required>
+      <input type="text" id="purchaseName" name="purchaseName" placeholder="שם לקוח" required />
+      <input type="tel" id="purchasePhone" name="purchasePhone" placeholder="טלפון" required />
+      <select id="purchaseType" name="purchaseType" required>
         <option disabled selected>סוג מזוזה</option>
         <option>ספרדי</option>
         <option>אשכנזי</option>
       </select>
-      <select required>
+      <select id="purchaseHidur" name="purchaseHidur" required>
         <option disabled selected>סוג הידור</option>
         <option>מהודר א א</option>
         <option>מהודר ב</option>
         <option>כשר לכתחילה</option>
       </select>
-      <select required>
+      <select id="purchaseSize" name="purchaseSize" required>
         <option disabled selected>גודל מזוזה</option>
         <option>12</option>
         <option>15</option>
         <option>25</option>
       </select>
-      <input type="number" placeholder="כמות" required />
-      <input type="number" placeholder="מחיר כולל" required />
+      <input type="number" id="purchaseQty" name="purchaseQty" placeholder="כמות" min="1" required />
+      <input type="number" id="purchasePrice" name="purchasePrice" placeholder="מחיר כולל" min="0" step="0.01" required />
       <button type="submit">צור קבלה</button>
     </form>
     <button onclick="goBackToChoice()">⬅ חזור</button>
@@ -87,16 +80,16 @@
   <div id="checkScreen" style="display:none;">
     <h2>בדיקת מזוזות</h2>
     <form id="checkForm" onsubmit="saveCheck(event)">
-      <input type="text" placeholder="שם לקוח" required />
-      <input type="tel" placeholder="טלפון" required />
-      <input type="date" required />
-      <input type="text" placeholder="מיקום המזוזה" required />
-      <select required>
+      <input type="text" id="checkName" name="checkName" placeholder="שם לקוח" required />
+      <input type="tel" id="checkPhone" name="checkPhone" placeholder="טלפון" required />
+      <input type="date" id="checkDate" name="checkDate" required />
+      <input type="text" id="checkLocation" name="checkLocation" placeholder="מיקום המזוזה" required />
+      <select id="checkStatus" name="checkStatus" required>
         <option disabled selected>סטטוס</option>
         <option>כשרה</option>
         <option>פסולה</option>
       </select>
-      <textarea placeholder="הערות"></textarea>
+      <textarea id="checkNotes" name="checkNotes" placeholder="הערות"></textarea>
       <button type="submit">שמור בדיקה</button>
     </form>
     <button onclick="goBackToChoice()">⬅ חזור</button>
@@ -123,118 +116,6 @@
     <h2>📊 דוחות חודשיים</h2>
     <p id="reportSummary"></p>
     <button onclick="window.print()">🖨️ הדפס דוח</button>
-    <button onclick="goBackToChoice()">⬅ חזור</button>
-  </div>
-</body>
-</html>
-
-  <!-- מסך הרשמה -->
-  <div id="registerScreen">
-    <h2>הרשמה</h2>
-    <form onsubmit="register(event)">
-      <input type="email" id="regEmail" placeholder="אימייל" required />
-      <input type="password" id="regPassword" placeholder="סיסמה" required />
-      <button type="submit">הרשמה</button>
-    </form>
-    <p>יש לכם חשבון? <a href="#" onclick="toggleScreens('login')">התחברו כאן</a></p>
-  </div>
-
-  <!-- מסך התחברות -->
-  <div id="loginScreen" style="display:none;">
-    <h2>התחברות</h2>
-    <form onsubmit="login(event)">
-      <input type="email" id="loginEmail" placeholder="אימייל" required />
-      <input type="password" id="loginPassword" placeholder="סיסמה" required />
-      <button type="submit">התחבר</button>
-    </form>
-    <p>אין לכם חשבון? <a href="#" onclick="toggleScreens('register')">הרשמה</a></p>
-  </div>
-
-  <!-- מסך אימות -->
-  <div id="verifyScreen" style="display:none;">
-    <h2>אימות אימייל</h2>
-    <p>נשלח אליך אימייל לאימות. לאחר שתאמת, לחץ על הכפתור:</p>
-    <button onclick="continueAfterVerification()">המשך לאחר אימות</button>
-  </div>
-
-  <!-- מסך בחירה -->
-  <div id="choiceScreen" style="display:none;">
-    <h2>בחר פעולה</h2>
-    <button onclick="chooseScreen('purchase')">🛒 רכישת מזוזות</button>
-    <button onclick="chooseScreen('check')">🕵️ בדיקת מזוזות</button>
-    <button onclick="showReceipts()">📑 צפייה בקבלות</button>
-    <button onclick="showReports()">📊 דוחות חודשיים</button>
-  </div>
-
-  <!-- מסך רכישת מזוזות -->
-  <div id="purchaseScreen" style="display:none;">
-    <h2>רכישת מזוזות</h2>
-    <form id="purchaseForm" onsubmit="savePurchase(event)">
-      <input type="text" placeholder="שם לקוח" required />
-      <input type="tel" placeholder="טלפון" required />
-      <select required>
-        <option disabled selected>סוג מזוזה</option>
-        <option>ספרדי</option>
-        <option>אשכנזי</option>
-      </select>
-      <select required>
-        <option disabled selected>סוג הידור</option>
-        <option>מהודר א א</option>
-        <option>מהודר ב</option>
-        <option>כשר לכתחילה</option>
-      </select>
-      <select required>
-        <option disabled selected>גודל מזוזה</option>
-        <option>12</option>
-        <option>15</option>
-        <option>25</option>
-      </select>
-      <input type="number" placeholder="כמות" required />
-      <input type="number" placeholder="מחיר כולל" required />
-      <button type="submit">צור קבלה</button>
-    </form>
-    <button onclick="goBackToChoice()">⬅ חזור</button>
-  </div>
-
-  <!-- מסך בדיקת מזוזות -->
-  <div id="checkScreen" style="display:none;">
-    <h2>בדיקת מזוזות</h2>
-    <form id="checkForm" onsubmit="saveCheck(event)">
-      <input type="text" placeholder="שם לקוח" required />
-      <input type="tel" placeholder="טלפון" required />
-      <input type="date" required />
-      <input type="text" placeholder="מיקום המזוזה" required />
-      <select required>
-        <option disabled selected>סטטוס</option>
-        <option>כשרה</option>
-        <option>פסולה</option>
-      </select>
-      <textarea placeholder="הערות"></textarea>
-      <button type="submit">שמור בדיקה</button>
-    </form>
-    <button onclick="goBackToChoice()">⬅ חזור</button>
-  </div>
-
-  <!-- מסך קבלה -->
-  <div id="receipt" style="display:none;">
-    <h3>קבלה</h3>
-    <p id="receiptContent"></p>
-    <button onclick="window.print()">🖨️ הדפס קבלה</button>
-    <button onclick="goBackToChoice()">⬅ חזור</button>
-  </div>
-
-  <!-- מסך צפייה בקבלות -->
-  <div id="receiptsScreen" style="display:none;">
-    <h2>📑 רשימת קבלות</h2>
-    <input type="text" id="searchInput" placeholder="חפש לפי שם או טלפון" oninput="filterReceipts()" />
-    <ul id="receiptsList"></ul>
-    <button onclick="goBackToChoice()">⬅ חזור</button>
-  </div>
-
-  <!-- מסך דוחות -->
-  <div id="reportsScreen" style="display:none;">
-    <h2>📊 דוחות חודשיים</h2>
-    <p id="reportSummary"></p>
     <button onclick="goBackToChoice()">⬅ חזור</button>
   </div>
 </body>
